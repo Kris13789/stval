@@ -1,5 +1,4 @@
 :root {
-  color-scheme: light dark;
   --bg: #f6f6f6;
   --card: #ffffff;
   --text: #1f2933;
@@ -30,15 +29,6 @@ header {
 h1 {
   margin: 0;
   font-size: clamp(24px, 4vw, 36px);
-}
-.subtitle {
-  color: var(--muted);
-  margin: 0;
-}
-.status {
-  margin: 16px 0 0;
-  font-size: 14px;
-  color: var(--muted);
 }
 .tasks {
   display: grid;
@@ -83,21 +73,31 @@ h1 {
   border: none;
   color: white;
   padding: 10px 14px;
-  border-radius: 999px;
+  border-radius: 10px;
   font-weight: 600;
   font-size: 14px;
   cursor: default;
 }
 .label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   font-weight: 600;
   color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  border: none;
+  text-transform: capitalize;
 }
 .label.approved {
   color: #15803d;
+  background: #dcfce7;
 }
 .label.pending {
-  color: #b45309;
+  color: #f59e0b;
+  background: #fef3c7;
 }
 .empty {
   border: 1px dashed var(--border);
@@ -113,14 +113,5 @@ h1 {
   .action {
     grid-column: 1 / -1;
     justify-content: flex-start;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f172a;
-    --card: #111827;
-    --text: #f8fafc;
-    --muted: #94a3b8;
-    --border: #1f2937;
   }
 }

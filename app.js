@@ -6,7 +6,6 @@ const SUPABASE_ANON_KEY =
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const tasksEl = document.getElementById("tasks");
-const statusEl = document.getElementById("status");
 
 const statusConfig = {
   todo: { type: "button", label: "Mark as done!" },
@@ -79,19 +78,16 @@ const renderTasks = (tasks) => {
 };
 
 const loadTasks = async () => {
-  statusEl.textContent = "Loading tasks…";
   const { data, error } = await supabase
     .from("tasks")
     .select("id,title,hearts,emoji,status")
     .order("hearts", { ascending: true });
 
   if (error) {
-    statusEl.textContent = "Failed to load tasks. Check console for details.";
     console.error("Supabase error:", error);
     return;
   }
 
-  statusEl.textContent = `Loaded ${data.length} task${data.length === 1 ? "" : "s"}.`;
   renderTasks(data);
 };
 
