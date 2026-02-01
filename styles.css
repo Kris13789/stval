@@ -5,6 +5,8 @@
   --muted: #667085;
   --accent: #ef476f;
   --border: #e5e7eb;
+  --topbar-height: 64px;
+  --sidebar-width: 240px;
 }
 * {
   box-sizing: border-box;
@@ -14,13 +16,89 @@ body {
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
+  min-height: 100vh;
 }
 .page {
   max-width: 960px;
   margin: 0 auto;
   padding: 24px 16px 48px;
 }
-header {
+.topbar {
+  height: var(--topbar-height);
+  background: var(--accent);
+  color: #fff;
+  display: none;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+}
+.topbar-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.menu-bars {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.menu-bars span {
+  width: 18px;
+  height: 2px;
+  background: #fff;
+  border-radius: 999px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+body.sidebar-open .menu-bars span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+body.sidebar-open .menu-bars span:nth-child(2) {
+  opacity: 0;
+}
+body.sidebar-open .menu-bars span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100vh;
+}
+.sidebar {
+  background: var(--accent);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+}
+.menu-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.menu-link[aria-current="page"] {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+.content {
+  background: var(--bg);
+}
+.sidebar-overlay {
+  display: none;
+}
+.page-header {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -56,6 +134,11 @@ h1 {
 .balance-heart {
   font-size: 0.6em;
   line-height: 1;
+}
+.page-subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 16px;
 }
 .tasks {
   display: grid;
@@ -144,6 +227,40 @@ h1 {
   color: var(--muted);
 }
 @media (max-width: 640px) {
+  .topbar {
+    display: flex;
+  }
+  .app-layout {
+    grid-template-columns: 1fr;
+    min-height: calc(100vh - var(--topbar-height));
+  }
+  .sidebar {
+    position: fixed;
+    top: var(--topbar-height);
+    left: 0;
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--topbar-height));
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    z-index: 20;
+  }
+  body.sidebar-open .sidebar {
+    transform: translateX(0);
+  }
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: var(--topbar-height) 0 0 0;
+    background: rgba(15, 23, 42, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+  }
+  body.sidebar-open .sidebar-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
   .card {
     grid-template-columns: auto 1fr;
   }

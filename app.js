@@ -7,6 +7,28 @@ const SUPABASE_ANON_KEY =
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const tasksEl = document.getElementById("tasks");
 const balanceEl = document.getElementById("balance");
+const menuToggle = document.getElementById("menuToggle");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+const bodyEl = document.body;
+
+const setSidebarOpen = (isOpen) => {
+  bodyEl.classList.toggle("sidebar-open", isOpen);
+  if (menuToggle) {
+    menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  }
+};
+
+if (menuToggle) {
+  menuToggle.addEventListener("click", () => {
+    setSidebarOpen(!bodyEl.classList.contains("sidebar-open"));
+  });
+}
+
+if (sidebarOverlay) {
+  sidebarOverlay.addEventListener("click", () => {
+    setSidebarOpen(false);
+  });
+}
 
 const statusConfig = {
   todo: { type: "button", label: "Mark as done!" },
@@ -143,4 +165,6 @@ const loadTasks = async () => {
   renderBalance(data);
 };
 
-loadTasks();
+if (tasksEl && balanceEl) {
+  loadTasks();
+}
