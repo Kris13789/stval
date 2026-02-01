@@ -56,12 +56,18 @@ h1 {
 .hearts {
   font-size: 16px;
   color: var(--accent);
-  margin-top: 4px;
+  margin-left: auto;
+  white-space: nowrap;
 }
 .meta {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .action {
   display: flex;
@@ -77,6 +83,8 @@ h1 {
   font-weight: 600;
   font-size: 14px;
   cursor: default;
+  min-width: 160px;
+  justify-content: center;
 }
 .label {
   display: inline-flex;
@@ -90,6 +98,8 @@ h1 {
   background: #f3f4f6;
   border: none;
   text-transform: capitalize;
+  min-width: 160px;
+  justify-content: center;
 }
 .label.approved {
   color: #15803d;

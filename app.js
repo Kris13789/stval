@@ -54,6 +54,9 @@ const renderTasks = (tasks) => {
     const meta = document.createElement("div");
     meta.className = "meta";
 
+    const titleRow = document.createElement("div");
+    titleRow.className = "title-row";
+
     const title = document.createElement("h2");
     title.className = "title";
     title.textContent = task.title || "Untitled task";
@@ -62,8 +65,9 @@ const renderTasks = (tasks) => {
     hearts.className = "hearts";
     hearts.textContent = heartString(task.hearts);
 
-    meta.appendChild(title);
-    meta.appendChild(hearts);
+    titleRow.appendChild(title);
+    titleRow.appendChild(hearts);
+    meta.appendChild(titleRow);
 
     const action = document.createElement("div");
     action.className = "action";
