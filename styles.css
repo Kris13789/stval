@@ -25,10 +25,37 @@ header {
   flex-direction: column;
   gap: 8px;
   margin-bottom: 24px;
+  align-items: center;
+  text-align: center;
 }
 h1 {
   margin: 0;
   font-size: clamp(24px, 4vw, 36px);
+}
+.balance {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+.balance-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.balance-value {
+  font-size: clamp(60px, 12vw, 90px);
+  font-weight: 700;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.balance-heart {
+  font-size: 0.6em;
+  line-height: 1;
 }
 .tasks {
   display: grid;

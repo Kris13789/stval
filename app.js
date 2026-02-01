@@ -6,6 +6,7 @@ const SUPABASE_ANON_KEY =
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const tasksEl = document.getElementById("tasks");
+const balanceEl = document.getElementById("balance");
 
 const statusConfig = {
   todo: { type: "button", label: "Mark as done!" },
@@ -18,19 +19,44 @@ const heartString = (count) => {
   return "❤️".repeat(safeCount || 1);
 };
 
-const buildStatusNode = (status) => {
+const buildStatusNode = (status, onClick) => {
   const config = statusConfig[status] || { type: "label", label: status || "Unknown", className: "label" };
   if (config.type === "button") {
     const button = document.createElement("button");
     button.className = "btn";
     button.type = "button";
     button.textContent = config.label;
+    if (onClick) {
+      button.addEventListener("click", onClick);
+    }
     return button;
   }
   const label = document.createElement("span");
   label.className = config.className || "label";
   label.textContent = config.label;
   return label;
+};
+
+const updateTaskStatus = async (taskId, nextStatus, button) => {
+  if (!taskId) return;
+  if (button) {
+    button.disabled = true;
+  }
+
+  const { error } = await supabase
+    .from("tasks")
+    .update({ status: nextStatus })
+    .eq("id", taskId);
+
+  if (error) {
+    console.error("Supabase update error:", error);
+    if (button) {
+      button.disabled = false;
+    }
+    return;
+  }
+
+  await loadTasks();
 };
 
 const renderTasks = (tasks) => {
@@ -71,7 +97,14 @@ const renderTasks = (tasks) => {
 
     const action = document.createElement("div");
     action.className = "action";
-    action.appendChild(buildStatusNode(task.status));
+    const statusNode =
+      task.status === "todo"
+        ? buildStatusNode(task.status, (event) => {
+            updateTaskStatus(task.id, "pending_approval", event.currentTarget);
+          })
+        : buildStatusNode(task.status);
+
+    action.appendChild(statusNode);
 
     card.appendChild(emoji);
     card.appendChild(meta);
@@ -79,6 +112,19 @@ const renderTasks = (tasks) => {
 
     tasksEl.appendChild(card);
   });
+};
+
+const calculateBalance = (tasks) =>
+  tasks.reduce((total, task) => {
+    if (task.status !== "approved") return total;
+    const hearts = Number(task.hearts) || 0;
+    return total + Math.max(0, hearts);
+  }, 0);
+
+const renderBalance = (tasks) => {
+  if (!balanceEl) return;
+  const total = calculateBalance(tasks);
+  balanceEl.textContent = total;
 };
 
 const loadTasks = async () => {
@@ -93,6 +139,7 @@ const loadTasks = async () => {
   }
 
   renderTasks(data);
+  renderBalance(data);
 };
 
 loadTasks();
