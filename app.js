@@ -131,7 +131,8 @@ const loadTasks = async () => {
   const { data, error } = await supabase
     .from("tasks")
     .select("id,title,hearts,emoji,status")
-    .order("hearts", { ascending: true });
+    .order("hearts", { ascending: true })
+    .order("title", { ascending: true });
 
   if (error) {
     console.error("Supabase error:", error);
