@@ -44,7 +44,7 @@ const heartString = (count) => {
 
 const priceString = (price) => {
   const safePrice = Math.max(0, Number(price) || 0);
-  return `${safePrice} ❤️`;
+  return `Price: ${safePrice} ❤️`;
 };
 
 const buildStatusNode = (status, onClick) => {
@@ -167,11 +167,15 @@ const loadTasks = async () => {
     return;
   }
 
-  renderTasks(data);
-  renderBalance(data);
+  if (tasksEl) {
+    renderTasks(data);
+  }
+  if (balanceEl) {
+    renderBalance(data);
+  }
 };
 
-if (tasksEl && balanceEl) {
+if (tasksEl || balanceEl) {
   loadTasks();
 }
 
