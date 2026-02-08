@@ -639,3 +639,10 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+
+@media (min-width: 641px) {
+  .modal {
+    left: var(--sidebar-width);
+    right: 0;
+  }
+}
