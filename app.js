@@ -11,6 +11,7 @@ const fallbackBalanceEl = balanceEls.length ? null : document.getElementById("ba
 const productsEl = document.getElementById("products");
 const productDetailEl = document.getElementById("productDetail");
 const productNameEl = document.getElementById("productName");
+const productPriceEl = document.getElementById("productPrice");
 const variantCarouselEl = document.getElementById("variantCarousel");
 const menuToggle = document.getElementById("menuToggle");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
@@ -259,7 +260,7 @@ const renderVariantEmpty = (message) => {
   variantCarouselEl.appendChild(empty);
 };
 
-const renderVariantsCarousel = (variants) => {
+const renderVariantsGrid = (variants) => {
   if (!variantCarouselEl) return;
   variantCarouselEl.innerHTML = "";
   if (!variants.length) {
@@ -267,29 +268,24 @@ const renderVariantsCarousel = (variants) => {
     return;
   }
 
-  const track = document.createElement("div");
-  track.className = "variant-track";
-
   variants.forEach((variant) => {
     const card = document.createElement("article");
-    card.className = "variant-card";
+    card.className = "product-card variant-card";
 
     const image = document.createElement("img");
-    image.className = "variant-image";
+    image.className = "product-image";
     image.src = variant.image_url || "";
     image.alt = variant.color ? `${variant.color} color` : "Color option";
     image.loading = "lazy";
 
-    const label = document.createElement("div");
-    label.className = "variant-name";
+    const label = document.createElement("h3");
+    label.className = "product-name";
     label.textContent = variant.color || "Unnamed color";
 
     card.appendChild(image);
     card.appendChild(label);
-    track.appendChild(card);
+    variantCarouselEl.appendChild(card);
   });
-
-  variantCarouselEl.appendChild(track);
 };
 
 const loadProductDetail = async () => {
@@ -315,6 +311,9 @@ const loadProductDetail = async () => {
   if (productNameEl) {
     productNameEl.textContent = product?.product_name || "Product";
   }
+  if (productPriceEl) {
+    productPriceEl.textContent = priceString(product?.price);
+  }
 
   const { data: variants, error: variantsError } = await supabase
     .from("variants")
@@ -328,7 +327,7 @@ const loadProductDetail = async () => {
     return;
   }
 
-  renderVariantsCarousel(variants || []);
+  renderVariantsGrid(variants || []);
 };
 
 if (productDetailEl) {
