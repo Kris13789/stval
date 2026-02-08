@@ -537,7 +537,7 @@ const setOrderMessage = (
   const needsHtml = includeEarnLink || message.includes("<br>");
   if (needsHtml) {
     const safeMessage = includeEarnLink
-      ? message.replace("tasks", '<a href="index.html">tasks</a>')
+      ? message.replace("tasks", '<a href="tasks.html">tasks</a>')
       : message;
     orderModalMessageEl.innerHTML = safeMessage;
     return;
