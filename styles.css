@@ -183,6 +183,13 @@ body.sidebar-open .menu-bars span:nth-child(3) {
 .modal[hidden] {
   display: none;
 }
+@media (min-width: 641px) {
+  .modal,
+  .modal-overlay {
+    left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+  }
+}
 .modal-content {
   width: min(420px, 100%);
   background: var(--card);
