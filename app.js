@@ -54,6 +54,12 @@ const statusConfig = {
   approved: { type: "label", label: "Completed!", className: "label approved" },
 };
 
+const orderStatusConfig = {
+  "🚚 in transit": { label: "🚚 in transit", className: "label pending" },
+  "❤️ delivered with love": { label: "❤️ delivered with love", className: "label approved" },
+  "📦 waiting for delivery": { label: "📦 waiting for delivery", className: "label" },
+};
+
 const heartString = (count) => {
   const safeCount = Math.max(0, Number(count) || 0);
   return "❤️".repeat(safeCount || 1);
@@ -76,6 +82,14 @@ const buildStatusNode = (status, onClick) => {
     }
     return button;
   }
+  const label = document.createElement("span");
+  label.className = config.className || "label";
+  label.textContent = config.label;
+  return label;
+};
+
+const buildOrderStatusNode = (status) => {
+  const config = orderStatusConfig[status] || { label: status || "Unknown", className: "label" };
   const label = document.createElement("span");
   label.className = config.className || "label";
   label.textContent = config.label;
@@ -310,7 +324,7 @@ const renderOrders = (orders) => {
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Image", "Product", "Variant color", "Price", "Ordered"].forEach((label) => {
+  ["Image", "Product", "Variant color", "Price", "Status", "Ordered"].forEach((label) => {
     const th = document.createElement("th");
     th.scope = "col";
     th.textContent = label;
@@ -330,6 +344,7 @@ const renderOrders = (orders) => {
     const imageUrl = getOrderImage(variant);
     const productName = product?.product_name || "Product";
     const colorName = variant?.color || "Unknown";
+    const statusNode = buildOrderStatusNode(order?.status);
 
     const row = document.createElement("tr");
 
@@ -355,6 +370,10 @@ const renderOrders = (orders) => {
     priceCell.className = "order-price";
     priceCell.textContent = `${priceValue} ❤️`;
 
+    const statusCell = document.createElement("td");
+    statusCell.className = "order-status";
+    statusCell.appendChild(statusNode);
+
     const dateCell = document.createElement("td");
     dateCell.className = "order-date";
     dateCell.textContent = orderDate;
@@ -363,6 +382,7 @@ const renderOrders = (orders) => {
     row.appendChild(nameCell);
     row.appendChild(colorCell);
     row.appendChild(priceCell);
+    row.appendChild(statusCell);
     row.appendChild(dateCell);
 
     tbody.appendChild(row);
@@ -391,6 +411,10 @@ const renderOrders = (orders) => {
     cardPrice.className = "order-price";
     cardPrice.textContent = `Price: ${priceValue} ❤️`;
 
+    const cardStatus = document.createElement("div");
+    cardStatus.className = "order-status";
+    cardStatus.appendChild(buildOrderStatusNode(order?.status));
+
     const cardDate = document.createElement("div");
     cardDate.className = "order-date";
     cardDate.textContent = orderDate;
@@ -398,6 +422,7 @@ const renderOrders = (orders) => {
     cardMeta.appendChild(cardName);
     cardMeta.appendChild(cardColor);
     cardMeta.appendChild(cardPrice);
+    cardMeta.appendChild(cardStatus);
     cardMeta.appendChild(cardDate);
 
     card.appendChild(cardImage);
@@ -416,7 +441,7 @@ const loadOrders = async () => {
   if (!ordersEl) return;
   const { data, error } = await supabase
     .from("orders")
-    .select("id,created_at, variants ( color, image_url, products ( product_name, image_url, price ) )")
+    .select("id,created_at,status, variants ( color, image_url, products ( product_name, image_url, price ) )")
     .order("created_at", { ascending: false });
 
   if (error) {

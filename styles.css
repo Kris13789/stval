@@ -372,6 +372,14 @@ h1 {
   color: var(--muted);
   font-weight: 500;
 }
+.order-status .label {
+  min-width: auto;
+  font-size: 13px;
+  padding: 4px 10px;
+}
+.orders-table .order-status {
+  white-space: nowrap;
+}
 .order-date {
   font-size: 13px;
   color: var(--muted);
