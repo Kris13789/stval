@@ -330,19 +330,27 @@ const renderVariantsGrid = (variants) => {
   });
 };
 
-const setOrderMessage = (message, includeEarnLink = false, isError = false) => {
+const setOrderMessage = (
+  message,
+  includeEarnLink = false,
+  isError = false,
+  isSuccess = false
+) => {
   if (!orderModalMessageEl) return;
   if (!message) {
     orderModalMessageEl.textContent = "";
     orderModalMessageEl.classList.remove("is-error");
+    orderModalMessageEl.classList.remove("is-success");
     return;
   }
   orderModalMessageEl.classList.toggle("is-error", isError);
-  if (includeEarnLink) {
-    orderModalMessageEl.innerHTML = `${message.replace(
-      "tasks",
-      '<a href="index.html">tasks</a>'
-    )}`;
+  orderModalMessageEl.classList.toggle("is-success", isSuccess);
+  const needsHtml = includeEarnLink || message.includes("<br>");
+  if (needsHtml) {
+    const safeMessage = includeEarnLink
+      ? message.replace("tasks", '<a href="index.html">tasks</a>')
+      : message;
+    orderModalMessageEl.innerHTML = safeMessage;
     return;
   }
   orderModalMessageEl.textContent = message;
@@ -407,7 +415,7 @@ const handleOrder = async () => {
     const balance = await fetchBalance();
     if (balance < price) {
       setOrderMessage(
-        "Ooopsie!<br>Not enough ❤️ :(<br>You can earn ❤️ by doing tasks.",
+        "Ooopsie! 😭 <br>Not enough ❤️ <br>You can earn ❤️ by doing tasks.",
         true,
         true
       );
@@ -420,7 +428,7 @@ const handleOrder = async () => {
       throw error;
     }
 
-    setOrderMessage("Order placed ❤️");
+    setOrderMessage("Order placed! <br>Wait for your gift 😏", false, false, true);
     orderModalOrderEl.textContent = "Ordered!";
     await loadTasks();
   } catch (error) {

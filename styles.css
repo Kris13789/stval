@@ -217,6 +217,11 @@ body.sidebar-open .menu-bars span:nth-child(3) {
   border-radius: 10px;
   padding: 10px 12px;
 }
+.modal-message.is-success {
+  background: #dcfce7;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
 .modal-message a {
   color: var(--accent);
   font-weight: 600;
