@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Product Colors</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="product-page">
+    <header class="topbar">
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="Toggle menu"
+        aria-controls="sidebar"
+        aria-expanded="false"
+      >
+        <span class="menu-bars" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+      <div class="topbar-title">Product</div>
+      <div class="topbar-balance" aria-label="Your balance">
+        <span class="topbar-balance-label">Balance</span>
+        <span class="topbar-balance-value">
+          <span class="balance-number" data-balance>0</span>
+          <span class="balance-heart" aria-hidden="true">❤️</span>
+        </span>
+      </div>
+    </header>
+    <div class="app-layout">
+      <nav class="sidebar" id="sidebar" aria-label="Main menu">
+        <a class="menu-link" href="index.html">Earn Hearts</a>
+        <a class="menu-link" href="shop.html">Go Shop</a>
+      </nav>
+      <main class="content">
+        <div class="page">
+          <div class="desktop-balance-row">
+            <div class="topbar-balance desktop-balance" aria-label="Your balance">
+              <span class="topbar-balance-label">Balance</span>
+              <span class="topbar-balance-value">
+                <span class="balance-number" data-balance>0</span>
+                <span class="balance-heart" aria-hidden="true">❤️</span>
+              </span>
+            </div>
+          </div>
+          <header class="page-header">
+            <h1 id="productName">Product</h1>
+            <p class="page-subtitle">Swipe to view available colors</p>
+          </header>
+          <section class="product-detail" id="productDetail">
+            <a class="back-link" href="shop.html">← Back to products</a>
+            <div class="variant-carousel" id="variantCarousel" aria-live="polite"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

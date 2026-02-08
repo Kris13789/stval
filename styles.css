@@ -183,6 +183,11 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
 }
+.product-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
 .product-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -209,6 +214,54 @@ h1 {
   color: var(--accent);
   font-weight: 600;
   margin-top: auto;
+}
+.product-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.back-link {
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  align-self: flex-start;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+.variant-carousel {
+  width: 100%;
+}
+.variant-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.variant-card {
+  min-width: 220px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-snap-align: start;
+}
+.variant-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #f3f4f6;
+}
+.variant-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
 }
 .card {
   background: var(--card);

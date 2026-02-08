@@ -9,6 +9,9 @@ const tasksEl = document.getElementById("tasks");
 const balanceEls = Array.from(document.querySelectorAll("[data-balance]"));
 const fallbackBalanceEl = balanceEls.length ? null : document.getElementById("balance");
 const productsEl = document.getElementById("products");
+const productDetailEl = document.getElementById("productDetail");
+const productNameEl = document.getElementById("productName");
+const variantCarouselEl = document.getElementById("variantCarousel");
 const menuToggle = document.getElementById("menuToggle");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const bodyEl = document.body;
@@ -191,6 +194,11 @@ const renderProducts = (products) => {
   }
 
   products.forEach((product) => {
+    const link = document.createElement("a");
+    link.className = "product-link";
+    link.href = `product.html?id=${encodeURIComponent(product.id)}`;
+    link.setAttribute("aria-label", `View colors for ${product.product_name || "product"}`);
+
     const card = document.createElement("article");
     card.className = "product-card";
 
@@ -211,7 +219,8 @@ const renderProducts = (products) => {
     card.appendChild(image);
     card.appendChild(name);
     card.appendChild(price);
-    productsEl.appendChild(card);
+    link.appendChild(card);
+    productsEl.appendChild(link);
   });
 };
 
@@ -231,4 +240,97 @@ const loadProducts = async () => {
 
 if (productsEl) {
   loadProducts();
+}
+
+const getProductIdFromUrl = () => {
+  const params = new URLSearchParams(window.location.search);
+  const rawId = params.get("id");
+  if (!rawId) return null;
+  const numericId = Number(rawId);
+  return Number.isNaN(numericId) ? rawId : numericId;
+};
+
+const renderVariantEmpty = (message) => {
+  if (!variantCarouselEl) return;
+  variantCarouselEl.innerHTML = "";
+  const empty = document.createElement("div");
+  empty.className = "empty";
+  empty.textContent = message;
+  variantCarouselEl.appendChild(empty);
+};
+
+const renderVariantsCarousel = (variants) => {
+  if (!variantCarouselEl) return;
+  variantCarouselEl.innerHTML = "";
+  if (!variants.length) {
+    renderVariantEmpty("No colors available for this product yet.");
+    return;
+  }
+
+  const track = document.createElement("div");
+  track.className = "variant-track";
+
+  variants.forEach((variant) => {
+    const card = document.createElement("article");
+    card.className = "variant-card";
+
+    const image = document.createElement("img");
+    image.className = "variant-image";
+    image.src = variant.image_url || "";
+    image.alt = variant.color ? `${variant.color} color` : "Color option";
+    image.loading = "lazy";
+
+    const label = document.createElement("div");
+    label.className = "variant-name";
+    label.textContent = variant.color || "Unnamed color";
+
+    card.appendChild(image);
+    card.appendChild(label);
+    track.appendChild(card);
+  });
+
+  variantCarouselEl.appendChild(track);
+};
+
+const loadProductDetail = async () => {
+  if (!productDetailEl) return;
+  const productId = getProductIdFromUrl();
+  if (!productId) {
+    renderVariantEmpty("Missing product id.");
+    return;
+  }
+
+  const { data: product, error: productError } = await supabase
+    .from("products")
+    .select("id,product_name,price,image_url")
+    .eq("id", productId)
+    .single();
+
+  if (productError) {
+    console.error("Supabase error:", productError);
+    renderVariantEmpty("Unable to load product details.");
+    return;
+  }
+
+  if (productNameEl) {
+    productNameEl.textContent = product?.product_name || "Product";
+  }
+
+  const { data: variants, error: variantsError } = await supabase
+    .from("variants")
+    .select("id,color,image_url")
+    .eq("product_id", productId)
+    .order("color", { ascending: true });
+
+  if (variantsError) {
+    console.error("Supabase error:", variantsError);
+    renderVariantEmpty("Unable to load colors for this product.");
+    return;
+  }
+
+  renderVariantsCarousel(variants || []);
+};
+
+if (productDetailEl) {
+  loadProductDetail();
 }
