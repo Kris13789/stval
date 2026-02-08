@@ -212,10 +212,15 @@ body.sidebar-open .menu-bars span:nth-child(3) {
   font-size: 14px;
   color: var(--muted);
 }
+.modal-message.is-error {
+  background: #ffe4e9;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
 .modal-message a {
   color: var(--accent);
   font-weight: 600;
-  text-decoration: none;
+  text-decoration: underline;
 }
 .modal-message a:hover {
   text-decoration: underline;

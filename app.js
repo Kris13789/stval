@@ -330,16 +330,18 @@ const renderVariantsGrid = (variants) => {
   });
 };
 
-const setOrderMessage = (message, includeEarnLink = false) => {
+const setOrderMessage = (message, includeEarnLink = false, isError = false) => {
   if (!orderModalMessageEl) return;
   if (!message) {
     orderModalMessageEl.textContent = "";
+    orderModalMessageEl.classList.remove("is-error");
     return;
   }
+  orderModalMessageEl.classList.toggle("is-error", isError);
   if (includeEarnLink) {
     orderModalMessageEl.innerHTML = `${message.replace(
-      "here",
-      '<a href="index.html">here</a>'
+      "tasks",
+      '<a href="index.html">tasks</a>'
     )}`;
     return;
   }
@@ -404,7 +406,11 @@ const handleOrder = async () => {
   try {
     const balance = await fetchBalance();
     if (balance < price) {
-      setOrderMessage("Not enough ❤️. You can earn ❤️ here.", true);
+      setOrderMessage(
+        "Ooopsie!<br>Not enough ❤️ :(<br>You can earn ❤️ by doing tasks.",
+        true,
+        true
+      );
       orderModalOrderEl.disabled = false;
       return;
     }
@@ -419,7 +425,7 @@ const handleOrder = async () => {
     await loadTasks();
   } catch (error) {
     console.error("Order error:", error);
-    setOrderMessage("Unable to place order. Please try again.");
+    setOrderMessage("Unable to place order. Please try again.", false, true);
     orderModalOrderEl.disabled = false;
   }
 };
