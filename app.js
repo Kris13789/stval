@@ -9,6 +9,7 @@ const tasksEl = document.getElementById("tasks");
 const balanceEls = Array.from(document.querySelectorAll("[data-balance]"));
 const fallbackBalanceEl = balanceEls.length ? null : document.getElementById("balance");
 const productsEl = document.getElementById("products");
+const ordersEl = document.getElementById("orders");
 const productDetailEl = document.getElementById("productDetail");
 const productNameEl = document.getElementById("productName");
 const productPriceEl = document.getElementById("productPrice");
@@ -281,6 +282,156 @@ if (productsEl) {
   loadProducts();
 }
 
+const formatOrderDate = (value) => {
+  if (!value) return "Unknown date";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Unknown date";
+  return date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+};
+
+const getOrderImage = (variant) => variant?.image_url || variant?.products?.image_url || "";
+
+const renderOrders = (orders) => {
+  if (!ordersEl) return;
+  ordersEl.innerHTML = "";
+  if (!orders.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No orders yet.";
+    ordersEl.appendChild(empty);
+    return;
+  }
+
+  const tableWrap = document.createElement("div");
+  tableWrap.className = "orders-table-wrap";
+
+  const table = document.createElement("table");
+  table.className = "orders-table";
+
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  ["Image", "Product", "Variant color", "Price", "Ordered"].forEach((label) => {
+    const th = document.createElement("th");
+    th.scope = "col";
+    th.textContent = label;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+
+  const tbody = document.createElement("tbody");
+  const cardsWrap = document.createElement("div");
+  cardsWrap.className = "orders-cards";
+
+  orders.forEach((order) => {
+    const variant = order?.variants;
+    const product = variant?.products;
+    const priceValue = Math.max(0, Number(product?.price) || 0);
+    const orderDate = formatOrderDate(order?.created_at);
+    const imageUrl = getOrderImage(variant);
+    const productName = product?.product_name || "Product";
+    const colorName = variant?.color || "Unknown";
+
+    const row = document.createElement("tr");
+
+    const imageCell = document.createElement("td");
+    const image = document.createElement("img");
+    image.className = "order-thumb";
+    image.src = imageUrl;
+    image.alt = productName || "Ordered product";
+    image.loading = "lazy";
+    imageCell.appendChild(image);
+
+    const nameCell = document.createElement("td");
+    const name = document.createElement("h3");
+    name.className = "order-name";
+    name.textContent = productName;
+    nameCell.appendChild(name);
+
+    const colorCell = document.createElement("td");
+    colorCell.className = "order-color";
+    colorCell.textContent = colorName;
+
+    const priceCell = document.createElement("td");
+    priceCell.className = "order-price";
+    priceCell.textContent = `${priceValue} ❤️`;
+
+    const dateCell = document.createElement("td");
+    dateCell.className = "order-date";
+    dateCell.textContent = orderDate;
+
+    row.appendChild(imageCell);
+    row.appendChild(nameCell);
+    row.appendChild(colorCell);
+    row.appendChild(priceCell);
+    row.appendChild(dateCell);
+
+    tbody.appendChild(row);
+
+    const card = document.createElement("article");
+    card.className = "order-card";
+
+    const cardImage = document.createElement("img");
+    cardImage.className = "order-card-image";
+    cardImage.src = imageUrl;
+    cardImage.alt = productName || "Ordered product";
+    cardImage.loading = "lazy";
+
+    const cardMeta = document.createElement("div");
+    cardMeta.className = "order-card-meta";
+
+    const cardName = document.createElement("h3");
+    cardName.className = "order-name";
+    cardName.textContent = productName;
+
+    const cardColor = document.createElement("div");
+    cardColor.className = "order-color";
+    cardColor.textContent = `Color: ${colorName}`;
+
+    const cardPrice = document.createElement("div");
+    cardPrice.className = "order-price";
+    cardPrice.textContent = `Price: ${priceValue} ❤️`;
+
+    const cardDate = document.createElement("div");
+    cardDate.className = "order-date";
+    cardDate.textContent = orderDate;
+
+    cardMeta.appendChild(cardName);
+    cardMeta.appendChild(cardColor);
+    cardMeta.appendChild(cardPrice);
+    cardMeta.appendChild(cardDate);
+
+    card.appendChild(cardImage);
+    card.appendChild(cardMeta);
+    cardsWrap.appendChild(card);
+  });
+
+  table.appendChild(thead);
+  table.appendChild(tbody);
+  tableWrap.appendChild(table);
+  ordersEl.appendChild(tableWrap);
+  ordersEl.appendChild(cardsWrap);
+};
+
+const loadOrders = async () => {
+  if (!ordersEl) return;
+  const { data, error } = await supabase
+    .from("orders")
+    .select("id,created_at, variants ( color, image_url, products ( product_name, image_url, price ) )")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Supabase error:", error);
+    renderOrders([]);
+    return;
+  }
+
+  renderOrders(data || []);
+};
+
+if (ordersEl) {
+  loadOrders();
+}
+
 const getProductIdFromUrl = () => {
   const params = new URLSearchParams(window.location.search);
   const rawId = params.get("id");
@@ -415,7 +566,7 @@ const handleOrder = async () => {
     const balance = await fetchBalance();
     if (balance < price) {
       setOrderMessage(
-        "Ooopsie! 😭 <br>Not enough ❤️ <br>You can earn ❤️ by doing tasks.",
+        "Ooopsie! 😭 <br>Not enough ❤️ <br>You can earn ❤️ by doing tasks",
         true,
         true
       );

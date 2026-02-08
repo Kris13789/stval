@@ -27,6 +27,9 @@ body {
   flex-direction: column;
   min-height: 0;
 }
+.orders-page .page {
+  max-width: 1280px;
+}
 .desktop-balance-row {
   display: flex;
   justify-content: flex-end;
@@ -289,6 +292,90 @@ h1 {
   padding-top: 8px;
   padding-bottom: 8px;
 }
+.orders {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.orders-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  overflow-x: auto;
+}
+.orders-cards {
+  display: none;
+  gap: 12px;
+}
+.orders-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+}
+.orders-table thead th {
+  text-align: left;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #fafafa;
+}
+.orders-table tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.orders-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.order-thumb {
+  width: 64px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #f3f4f6;
+  display: block;
+}
+.order-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+.order-card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #f3f4f6;
+}
+.order-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.order-name {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 600;
+}
+.order-color {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.order-date {
+  font-size: 13px;
+  color: var(--muted);
+}
 .product-link {
   text-decoration: none;
   color: inherit;
@@ -517,5 +604,14 @@ h1 {
   .action {
     grid-column: 1 / -1;
     justify-content: flex-start;
+  }
+  .orders-table-wrap {
+    display: none;
+  }
+  .orders-cards {
+    display: grid;
+  }
+  .order-card {
+    grid-template-columns: 1fr;
   }
 }
