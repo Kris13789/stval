@@ -30,14 +30,6 @@ body {
 .orders-page .page {
   max-width: 1280px;
 }
-.desktop-balance-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 12px;
-}
-.desktop-balance {
-  color: var(--text);
-}
 .topbar {
   height: var(--topbar-height);
   background: var(--accent);
@@ -72,6 +64,31 @@ body {
 }
 .topbar-balance .balance-heart {
   font-size: 1em;
+}
+@media (min-width: 641px) {
+  .topbar {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    color: var(--text);
+    padding: 0 24px;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .topbar-title,
+  .menu-toggle {
+    display: none;
+  }
+  .topbar-balance {
+    pointer-events: none;
+  }
+  .sidebar {
+    position: relative;
+    z-index: 5;
+  }
 }
 .menu-toggle {
   display: inline-flex;
@@ -637,12 +654,5 @@ h1 {
   }
   .order-card {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (min-width: 641px) {
-  .modal {
-    left: var(--sidebar-width);
-    right: 0;
   }
 }
