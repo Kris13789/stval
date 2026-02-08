@@ -303,7 +303,7 @@ const formatOrderDate = (value) => {
   return date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 };
 
-const getOrderImage = (variant) => variant?.image_url || variant?.products?.image_url || "";
+const getOrderImage = (variant) => variant?.image_url || "";
 
 const renderOrders = (orders) => {
   if (!ordersEl) return;
@@ -324,7 +324,7 @@ const renderOrders = (orders) => {
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Image", "Product", "Variant color", "Price", "Status", "Ordered"].forEach((label) => {
+  ["Image", "Product", "Variant color", "Price", "Ordered", "Status"].forEach((label) => {
     const th = document.createElement("th");
     th.scope = "col";
     th.textContent = label;
@@ -370,20 +370,20 @@ const renderOrders = (orders) => {
     priceCell.className = "order-price";
     priceCell.textContent = `${priceValue} ❤️`;
 
-    const statusCell = document.createElement("td");
-    statusCell.className = "order-status";
-    statusCell.appendChild(statusNode);
-
     const dateCell = document.createElement("td");
     dateCell.className = "order-date";
     dateCell.textContent = orderDate;
+
+    const statusCell = document.createElement("td");
+    statusCell.className = "order-status";
+    statusCell.appendChild(statusNode);
 
     row.appendChild(imageCell);
     row.appendChild(nameCell);
     row.appendChild(colorCell);
     row.appendChild(priceCell);
-    row.appendChild(statusCell);
     row.appendChild(dateCell);
+    row.appendChild(statusCell);
 
     tbody.appendChild(row);
 
@@ -411,19 +411,19 @@ const renderOrders = (orders) => {
     cardPrice.className = "order-price";
     cardPrice.textContent = `Price: ${priceValue} ❤️`;
 
+    const cardDate = document.createElement("div");
+    cardDate.className = "order-date";
+    cardDate.textContent = `Ordered: ${orderDate}`;
+
     const cardStatus = document.createElement("div");
     cardStatus.className = "order-status";
     cardStatus.appendChild(buildOrderStatusNode(order?.status));
 
-    const cardDate = document.createElement("div");
-    cardDate.className = "order-date";
-    cardDate.textContent = orderDate;
-
     cardMeta.appendChild(cardName);
     cardMeta.appendChild(cardColor);
     cardMeta.appendChild(cardPrice);
-    cardMeta.appendChild(cardStatus);
     cardMeta.appendChild(cardDate);
+    cardMeta.appendChild(cardStatus);
 
     card.appendChild(cardImage);
     card.appendChild(cardMeta);
