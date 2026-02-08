@@ -13,9 +13,20 @@ const productDetailEl = document.getElementById("productDetail");
 const productNameEl = document.getElementById("productName");
 const productPriceEl = document.getElementById("productPrice");
 const variantCarouselEl = document.getElementById("variantCarousel");
+const orderModalEl = document.getElementById("orderModal");
+const orderModalOverlayEl = document.getElementById("orderModalOverlay");
+const orderModalCloseEl = document.getElementById("orderModalClose");
+const orderModalImageEl = document.getElementById("orderModalImage");
+const orderModalTitleEl = document.getElementById("orderModalTitle");
+const orderModalSubtitleEl = document.getElementById("orderModalSubtitle");
+const orderModalPriceEl = document.getElementById("orderModalPrice");
+const orderModalOrderEl = document.getElementById("orderModalOrder");
+const orderModalMessageEl = document.getElementById("orderModalMessage");
 const menuToggle = document.getElementById("menuToggle");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const bodyEl = document.body;
+let currentProduct = null;
+let currentVariant = null;
 
 const setSidebarOpen = (isOpen) => {
   bodyEl.classList.toggle("sidebar-open", isOpen);
@@ -154,10 +165,35 @@ const calculateBalance = (tasks) =>
     return total + Math.max(0, hearts);
   }, 0);
 
-const renderBalance = (tasks) => {
+const calculateNetBalance = (tasks, spentHearts) => {
+  const earned = calculateBalance(tasks);
+  const spent = Math.max(0, Number(spentHearts) || 0);
+  return Math.max(0, earned - spent);
+};
+
+const fetchSpentHearts = async () => {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("id, variants ( products ( price ) )");
+  if (error) {
+    throw error;
+  }
+  return (data || []).reduce((total, order) => {
+    const price = Number(order?.variants?.products?.price) || 0;
+    return total + Math.max(0, price);
+  }, 0);
+};
+
+const renderBalance = async (tasks) => {
   const targets = balanceEls.length ? balanceEls : fallbackBalanceEl ? [fallbackBalanceEl] : [];
   if (!targets.length) return;
-  const total = calculateBalance(tasks);
+  let total = calculateBalance(tasks);
+  try {
+    const spent = await fetchSpentHearts();
+    total = calculateNetBalance(tasks, spent);
+  } catch (error) {
+    console.error("Supabase error:", error);
+  }
   targets.forEach((el) => {
     el.textContent = total;
   });
@@ -176,7 +212,9 @@ const loadTasks = async () => {
   }
 
   if (tasksEl) renderTasks(data);
-  if (balanceEls.length || fallbackBalanceEl) renderBalance(data);
+  if (balanceEls.length || fallbackBalanceEl) {
+    await renderBalance(data);
+  }
 };
 
 if (tasksEl || balanceEls.length || fallbackBalanceEl) {
@@ -269,8 +307,9 @@ const renderVariantsGrid = (variants) => {
   }
 
   variants.forEach((variant) => {
-    const card = document.createElement("article");
-    card.className = "product-card variant-card";
+    const card = document.createElement("button");
+    card.className = "product-card variant-card variant-button";
+    card.type = "button";
 
     const image = document.createElement("img");
     image.className = "product-image";
@@ -284,8 +323,105 @@ const renderVariantsGrid = (variants) => {
 
     card.appendChild(image);
     card.appendChild(label);
+    card.addEventListener("click", () => {
+      openOrderModal(variant);
+    });
     variantCarouselEl.appendChild(card);
   });
+};
+
+const setOrderMessage = (message, includeEarnLink = false) => {
+  if (!orderModalMessageEl) return;
+  if (!message) {
+    orderModalMessageEl.textContent = "";
+    return;
+  }
+  if (includeEarnLink) {
+    orderModalMessageEl.innerHTML = `${message.replace(
+      "here",
+      '<a href="index.html">here</a>'
+    )}`;
+    return;
+  }
+  orderModalMessageEl.textContent = message;
+};
+
+const openOrderModal = (variant) => {
+  if (!orderModalEl || !orderModalOverlayEl || !currentProduct) return;
+  currentVariant = variant;
+  if (orderModalImageEl) {
+    orderModalImageEl.src = variant.image_url || currentProduct.image_url || "";
+    orderModalImageEl.alt = variant.color ? `${variant.color} color` : "Product color";
+  }
+  if (orderModalTitleEl) {
+    orderModalTitleEl.textContent = currentProduct.product_name || "Product";
+  }
+  if (orderModalSubtitleEl) {
+    orderModalSubtitleEl.textContent = variant.color ? `Color: ${variant.color}` : "Color option";
+  }
+  if (orderModalPriceEl) {
+    orderModalPriceEl.textContent = priceString(currentProduct.price);
+  }
+  if (orderModalOrderEl) {
+    orderModalOrderEl.disabled = false;
+    orderModalOrderEl.textContent = "Order";
+  }
+  setOrderMessage("");
+  orderModalEl.hidden = false;
+  orderModalOverlayEl.hidden = false;
+  orderModalOverlayEl.classList.add("is-visible");
+};
+
+const closeOrderModal = () => {
+  if (!orderModalEl || !orderModalOverlayEl) return;
+  orderModalEl.hidden = true;
+  orderModalOverlayEl.hidden = true;
+  orderModalOverlayEl.classList.remove("is-visible");
+  currentVariant = null;
+  setOrderMessage("");
+};
+
+const fetchBalance = async () => {
+  const { data, error } = await supabase.from("tasks").select("hearts,status");
+  if (error) {
+    throw error;
+  }
+  let spent = 0;
+  try {
+    spent = await fetchSpentHearts();
+  } catch (spentError) {
+    console.error("Supabase error:", spentError);
+  }
+  return calculateNetBalance(data || [], spent);
+};
+
+const handleOrder = async () => {
+  if (!currentVariant || !currentProduct || !orderModalOrderEl) return;
+  orderModalOrderEl.disabled = true;
+  setOrderMessage("");
+  const price = Math.max(0, Number(currentProduct.price) || 0);
+
+  try {
+    const balance = await fetchBalance();
+    if (balance < price) {
+      setOrderMessage("Not enough ❤️. You can earn ❤️ here.", true);
+      orderModalOrderEl.disabled = false;
+      return;
+    }
+
+    const { error } = await supabase.from("orders").insert({ variant_id: currentVariant.id });
+    if (error) {
+      throw error;
+    }
+
+    setOrderMessage("Order placed ❤️");
+    orderModalOrderEl.textContent = "Ordered!";
+    await loadTasks();
+  } catch (error) {
+    console.error("Order error:", error);
+    setOrderMessage("Unable to place order. Please try again.");
+    orderModalOrderEl.disabled = false;
+  }
 };
 
 const loadProductDetail = async () => {
@@ -307,6 +443,7 @@ const loadProductDetail = async () => {
     renderVariantEmpty("Unable to load product details.");
     return;
   }
+  currentProduct = product;
 
   if (productNameEl) {
     productNameEl.textContent = product?.product_name || "Product";
@@ -333,3 +470,18 @@ const loadProductDetail = async () => {
 if (productDetailEl) {
   loadProductDetail();
 }
+
+if (orderModalCloseEl) {
+  orderModalCloseEl.addEventListener("click", closeOrderModal);
+}
+if (orderModalOverlayEl) {
+  orderModalOverlayEl.addEventListener("click", closeOrderModal);
+}
+if (orderModalOrderEl) {
+  orderModalOrderEl.addEventListener("click", handleOrder);
+}
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && orderModalEl && !orderModalEl.hidden) {
+    closeOrderModal();
+  }
+});

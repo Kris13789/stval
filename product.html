@@ -60,6 +60,18 @@
       </main>
     </div>
     <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+    <div class="modal-overlay" id="orderModalOverlay" hidden></div>
+    <div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle" hidden>
+      <div class="modal-content">
+        <button class="modal-close" id="orderModalClose" type="button" aria-label="Close modal">×</button>
+        <img class="modal-image" id="orderModalImage" alt="" />
+        <h2 class="modal-title" id="orderModalTitle"></h2>
+        <p class="modal-subtitle" id="orderModalSubtitle"></p>
+        <div class="modal-price" id="orderModalPrice"></div>
+        <button class="btn modal-order" id="orderModalOrder" type="button">Order</button>
+        <p class="modal-message" id="orderModalMessage" role="status" aria-live="polite"></p>
+      </div>
+    </div>
 
     <script type="module" src="app.js"></script>
   </body>

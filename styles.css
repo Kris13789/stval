@@ -139,6 +139,87 @@ body.sidebar-open .menu-bars span:nth-child(3) {
 .sidebar-overlay {
   display: none;
 }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 30;
+}
+.modal-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 40;
+}
+.modal[hidden] {
+  display: none;
+}
+.modal-content {
+  width: min(420px, 100%);
+  background: var(--card);
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 12px;
+  position: relative;
+  text-align: center;
+}
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--muted);
+}
+.modal-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f3f4f6;
+}
+.modal-title {
+  margin: 0;
+  font-size: 22px;
+}
+.modal-subtitle {
+  margin: 0;
+  color: var(--muted);
+}
+.modal-price {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.modal-order {
+  width: 100%;
+}
+.modal-message {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.modal-message a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.modal-message a:hover {
+  text-decoration: underline;
+}
 .page-header {
   display: flex;
   flex-direction: column;
@@ -262,6 +343,23 @@ h1 {
 .variant-card {
   padding: 20px;
   gap: 14px;
+}
+.variant-button {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+.variant-button:hover,
+.variant-button:focus-visible {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.18);
+}
+.variant-button:focus-visible {
+  outline: 2px solid rgba(239, 71, 111, 0.4);
+  outline-offset: 2px;
 }
 @media (min-width: 900px) {
   .variant-grid {
