@@ -7,6 +7,7 @@ const SUPABASE_ANON_KEY =
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const tasksEl = document.getElementById("tasks");
 const balanceEl = document.getElementById("balance");
+const productsEl = document.getElementById("products");
 const menuToggle = document.getElementById("menuToggle");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const bodyEl = document.body;
@@ -39,6 +40,11 @@ const statusConfig = {
 const heartString = (count) => {
   const safeCount = Math.max(0, Number(count) || 0);
   return "❤️".repeat(safeCount || 1);
+};
+
+const priceString = (price) => {
+  const safePrice = Math.max(0, Number(price) || 0);
+  return `${safePrice} ❤️`;
 };
 
 const buildStatusNode = (status, onClick) => {
@@ -167,4 +173,58 @@ const loadTasks = async () => {
 
 if (tasksEl && balanceEl) {
   loadTasks();
+}
+
+const renderProducts = (products) => {
+  if (!productsEl) return;
+  productsEl.innerHTML = "";
+  if (!products.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No products available yet.";
+    productsEl.appendChild(empty);
+    return;
+  }
+
+  products.forEach((product) => {
+    const card = document.createElement("article");
+    card.className = "product-card";
+
+    const image = document.createElement("img");
+    image.className = "product-image";
+    image.src = product.image_url || "";
+    image.alt = product.product_name || "Product image";
+    image.loading = "lazy";
+
+    const name = document.createElement("h3");
+    name.className = "product-name";
+    name.textContent = product.product_name || "Unnamed product";
+
+    const price = document.createElement("div");
+    price.className = "product-price";
+    price.textContent = priceString(product.price);
+
+    card.appendChild(image);
+    card.appendChild(name);
+    card.appendChild(price);
+    productsEl.appendChild(card);
+  });
+};
+
+const loadProducts = async () => {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id,product_name,price,image_url")
+    .order("product_name", { ascending: true });
+
+  if (error) {
+    console.error("Supabase error:", error);
+    return;
+  }
+
+  renderProducts(data);
+};
+
+if (productsEl) {
+  loadProducts();
 }
