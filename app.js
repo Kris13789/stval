@@ -6,7 +6,8 @@ const SUPABASE_ANON_KEY =
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const tasksEl = document.getElementById("tasks");
-const balanceEl = document.getElementById("balance");
+const balanceEls = Array.from(document.querySelectorAll("[data-balance]"));
+const fallbackBalanceEl = balanceEls.length ? null : document.getElementById("balance");
 const productsEl = document.getElementById("products");
 const menuToggle = document.getElementById("menuToggle");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
@@ -150,9 +151,12 @@ const calculateBalance = (tasks) =>
   }, 0);
 
 const renderBalance = (tasks) => {
-  if (!balanceEl) return;
+  const targets = balanceEls.length ? balanceEls : fallbackBalanceEl ? [fallbackBalanceEl] : [];
+  if (!targets.length) return;
   const total = calculateBalance(tasks);
-  balanceEl.textContent = total;
+  targets.forEach((el) => {
+    el.textContent = total;
+  });
 };
 
 const loadTasks = async () => {
@@ -167,15 +171,11 @@ const loadTasks = async () => {
     return;
   }
 
-  if (tasksEl) {
-    renderTasks(data);
-  }
-  if (balanceEl) {
-    renderBalance(data);
-  }
+  if (tasksEl) renderTasks(data);
+  if (balanceEls.length || fallbackBalanceEl) renderBalance(data);
 };
 
-if (tasksEl || balanceEl) {
+if (tasksEl || balanceEls.length || fallbackBalanceEl) {
   loadTasks();
 }
 

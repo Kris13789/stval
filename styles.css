@@ -23,6 +23,14 @@ body {
   margin: 0 auto;
   padding: 24px 16px 48px;
 }
+.desktop-balance-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+.desktop-balance {
+  color: var(--text);
+}
 .topbar {
   height: var(--topbar-height);
   background: var(--accent);
@@ -35,6 +43,28 @@ body {
 .topbar-title {
   font-size: 18px;
   font-weight: 600;
+}
+.topbar-balance {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.topbar-balance-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.topbar-balance-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+}
+.topbar-balance .balance-heart {
+  font-size: 1em;
 }
 .menu-toggle {
   display: inline-flex;
@@ -276,6 +306,9 @@ h1 {
 @media (max-width: 640px) {
   .topbar {
     display: flex;
+  }
+  .desktop-balance-row {
+    display: none;
   }
   .app-layout {
     grid-template-columns: 1fr;
