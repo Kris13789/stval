@@ -230,6 +230,12 @@ body.sidebar-open .menu-bars span:nth-child(3) {
   font-weight: 600;
   text-decoration: underline;
 }
+.modal-message.is-success a {
+  color: #16a34a;
+}
+.modal-message.is-success a:hover {
+  color: #15803d;
+}
 .modal-message a:hover {
   text-decoration: underline;
 }
@@ -562,7 +568,7 @@ h1 {
   background: #fef3c7;
 }
 .empty {
-  border: 1px dashed var(--border);
+  border: none;
   border-radius: 16px;
   padding: 24px;
   text-align: center;

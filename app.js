@@ -122,7 +122,7 @@ const renderTasks = (tasks) => {
   tasksEl.innerHTML = "";
   if (!tasks.length) {
     const empty = document.createElement("div");
-    empty.className = "empty";
+    empty.className = "empty modal-message is-error";
     empty.textContent = "No tasks available yet.";
     tasksEl.appendChild(empty);
     return;
@@ -311,7 +311,20 @@ const renderOrders = (orders) => {
   if (!orders.length) {
     const empty = document.createElement("div");
     empty.className = "empty";
-    empty.textContent = "No orders yet.";
+    const emptyTitle = document.createElement("p");
+    emptyTitle.textContent = "No orders yet 🥺";
+
+    const emptyLink = document.createElement("p");
+    emptyLink.className = "modal-message";
+    emptyLink.append("You can order your St. Valentine’s gift ");
+
+    const shopLink = document.createElement("a");
+    shopLink.href = "shop.html";
+    shopLink.textContent = "here";
+    emptyLink.appendChild(shopLink);
+
+    empty.appendChild(emptyTitle);
+    empty.appendChild(emptyLink);
     ordersEl.appendChild(empty);
     return;
   }
@@ -324,7 +337,7 @@ const renderOrders = (orders) => {
 
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  ["Image", "Product", "Variant color", "Price", "Ordered", "Status"].forEach((label) => {
+  ["Image", "Product", "Color", "Price", "Ordered", "Status"].forEach((label) => {
     const th = document.createElement("th");
     th.scope = "col";
     th.textContent = label;
@@ -604,7 +617,12 @@ const handleOrder = async () => {
       throw error;
     }
 
-    setOrderMessage("Order placed! <br>Wait for your gift 😏", false, false, true);
+    setOrderMessage(
+      'Order placed! <br>Wait for your gift 😏 <br>View your orders <a href="orders.html">here</a>',
+      false,
+      false,
+      true
+    );
     orderModalOrderEl.textContent = "Ordered!";
     await loadTasks();
   } catch (error) {
