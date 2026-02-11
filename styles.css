@@ -322,6 +322,12 @@ h1 {
   padding-top: 8px;
   padding-bottom: 8px;
 }
+
+@media (min-width: 641px) {
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 .orders {
   flex: 1;
   overflow-y: auto;
