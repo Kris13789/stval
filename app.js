@@ -29,6 +29,35 @@ const bodyEl = document.body;
 let currentProduct = null;
 let currentVariant = null;
 
+const isAuthPage = () => {
+  const path = window.location.pathname || "";
+  return path.endsWith("login.html") || path.endsWith("auth-callback.html");
+};
+
+const ensureAuth = async () => {
+  if (isAuthPage()) return false;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    window.location.href = "login.html";
+    return false;
+  }
+  const { data } = await supabase
+    .from("allowed_emails")
+    .select("email")
+    .eq("email", user.email)
+    .maybeSingle();
+  if (!data) {
+    await supabase.auth.signOut();
+    window.location.href = "login.html";
+    return false;
+  }
+  return true;
+};
+
+(async () => {
+  const allowed = await ensureAuth();
+  if (!allowed) return;
+
 const setSidebarOpen = (isOpen) => {
   bodyEl.classList.toggle("sidebar-open", isOpen);
   if (menuToggle) {
@@ -693,3 +722,10 @@ document.addEventListener("keydown", (event) => {
     closeOrderModal();
   }
 });
+
+document.getElementById("signOut")?.addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  window.location.href = "login.html";
+});
+
+})();
