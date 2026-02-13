@@ -30,12 +30,13 @@
 
       const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const btn = document.getElementById("signInWithGoogle");
+      const redirectTo = new URL("auth-callback.html", window.location.href).toString();
 
       btn.addEventListener("click", async () => {
         btn.disabled = true;
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: "google",
-          options: { redirectTo: location.origin + "/auth-callback.html" },
+          options: { redirectTo },
         });
         if (error) {
           console.error("Sign in error:", error);
