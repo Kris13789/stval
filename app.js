@@ -11,6 +11,7 @@ const fallbackBalanceEl = balanceEls.length ? null : document.getElementById("ba
 const BALANCE_PLACEHOLDER = "--";
 const productsEl = document.getElementById("products");
 const ordersEl = document.getElementById("orders");
+const ordersSubtitleEl = document.getElementById("ordersSubtitle");
 const productDetailEl = document.getElementById("productDetail");
 const productNameEl = document.getElementById("productName");
 const productPriceEl = document.getElementById("productPrice");
@@ -357,6 +358,9 @@ const getOrderImage = (variant) => variant?.image_url || "";
 const renderOrders = (orders) => {
   if (!ordersEl) return;
   ordersEl.innerHTML = "";
+  if (ordersSubtitleEl) {
+    ordersSubtitleEl.hidden = !orders.length;
+  }
   if (!orders.length) {
     const empty = document.createElement("div");
     empty.className = "empty";
