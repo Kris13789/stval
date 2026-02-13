@@ -151,6 +151,30 @@ body.sidebar-open .menu-bars span:nth-child(3) {
 .auth-page h1 {
   color: var(--accent);
 }
+.auth-page .auth-logo-container {
+  display: flex;
+  justify-content: center;
+}
+.auth-page .auth-logo-icon {
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+  background-color: var(--accent);
+  -webkit-mask-image: url("assets/heart_logo.svg");
+  mask-image: url("assets/heart_logo.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+@media (max-width: 640px) {
+  .auth-page .auth-logo-icon {
+    width: 130px;
+    height: 130px;
+  }
+}
 .auth-page .page-header {
   gap: 18px;
 }

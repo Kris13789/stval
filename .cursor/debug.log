@@ -2,3 +2,11 @@
 {"runId":"pre-fix","hypothesisId":"H2","location":"app.js:40","message":"ensureAuth.enter","data":{"path":"/shop.html","isAuthPage":false},"timestamp":1771023644445}
 {"runId":"pre-fix","hypothesisId":"H3","location":"app.js:44","message":"ensureAuth.getUser.result","data":{"hasUser":false,"elapsedMs":5},"timestamp":1771023644450}
 {"runId":"pre-fix","hypothesisId":"H4","location":"app.js:49","message":"ensureAuth.redirect.login.noUser","data":{"path":"/shop.html"},"timestamp":1771023644451}
+{"runId":"pre-fix","hypothesisId":"H1","location":"app.js:78","message":"bootstrap.initial.visibility","data":{"path":"/shop.html","hasAuthReady":false,"appLayoutVisibility":"hidden","topbarDisplay":"none"},"timestamp":1771023720814}
+{"runId":"pre-fix","hypothesisId":"H2","location":"app.js:40","message":"ensureAuth.enter","data":{"path":"/shop.html","isAuthPage":false},"timestamp":1771023720814}
+{"runId":"pre-fix","hypothesisId":"H3","location":"app.js:44","message":"ensureAuth.getUser.result","data":{"hasUser":false,"elapsedMs":5},"timestamp":1771023720819}
+{"runId":"pre-fix","hypothesisId":"H4","location":"app.js:49","message":"ensureAuth.redirect.login.noUser","data":{"path":"/shop.html"},"timestamp":1771023720819}
+{"runId":"pre-fix","hypothesisId":"H1","location":"app.js:78","message":"bootstrap.initial.visibility","data":{"path":"/","hasAuthReady":false,"appLayoutVisibility":"hidden","topbarDisplay":"none"},"timestamp":1771024087945}
+{"runId":"pre-fix","hypothesisId":"H2","location":"app.js:40","message":"ensureAuth.enter","data":{"path":"/","isAuthPage":false},"timestamp":1771024087945}
+{"runId":"pre-fix","hypothesisId":"H3","location":"app.js:44","message":"ensureAuth.getUser.result","data":{"hasUser":false,"elapsedMs":5},"timestamp":1771024087951}
+{"runId":"pre-fix","hypothesisId":"H4","location":"app.js:49","message":"ensureAuth.redirect.login.noUser","data":{"path":"/"},"timestamp":1771024087951}
