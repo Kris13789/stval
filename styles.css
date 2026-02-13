@@ -144,6 +144,34 @@ body.sidebar-open .menu-bars span:nth-child(3) {
 .auth-page h1 {
   color: var(--accent);
 }
+.auth-page .page-header {
+  gap: 18px;
+}
+.auth-page .page-subtitle {
+  margin: 0;
+}
+.auth-page .access-denied-title {
+  color: var(--accent);
+  font-size: clamp(42px, 7vw, 56px);
+  font-weight: 600;
+  line-height: 1.1;
+}
+.auth-status {
+  align-items: center;
+}
+.auth-loader {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #ffd3df;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: auth-spin 0.7s linear infinite;
+}
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 .auth-page .btn {
   width: auto;
   align-self: center;
@@ -158,8 +186,23 @@ body.sidebar-open .menu-bars span:nth-child(3) {
   color: #9f1239;
   padding: 10px 12px;
 }
+.auth-page #errorMessage.access-denied-note {
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: #98a2b3;
+  padding: 0;
+}
 .auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   align-self: center;
+  margin-inline: auto;
+  text-decoration: underline;
+}
+.auth-back-link[hidden] {
+  display: none;
 }
 .sidebar {
   background: var(--accent);
@@ -534,6 +577,9 @@ h1 {
   color: var(--accent);
   text-decoration: none;
   align-self: flex-start;
+}
+.auth-page .auth-back-link {
+  text-decoration: underline;
 }
 .back-link:hover {
   text-decoration: underline;
