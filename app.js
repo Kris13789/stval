@@ -623,6 +623,24 @@ const fetchBalance = async () => {
   return calculateNetBalance(data || [], spent);
 };
 
+const parsePlaceOrderError = async (invokeError, invokeData) => {
+  if (invokeData?.error) {
+    return String(invokeData.error).toUpperCase();
+  }
+  if (!invokeError) {
+    return "";
+  }
+  if (invokeError.context) {
+    try {
+      const payload = await invokeError.context.json();
+      return String(payload?.error || "").toUpperCase();
+    } catch (_error) {
+      return "";
+    }
+  }
+  return String(invokeError.message || "").toUpperCase();
+};
+
 const handleOrder = async () => {
   if (!currentVariant || !currentProduct || !orderModalOrderEl) return;
   orderModalOrderEl.disabled = true;
@@ -641,9 +659,39 @@ const handleOrder = async () => {
       return;
     }
 
-    const { error } = await supabase.from("orders").insert({ variant_id: currentVariant.id });
-    if (error) {
-      throw error;
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
+    if (!accessToken) {
+      setOrderMessage("Session expired. Please sign in again.", false, true);
+      orderModalOrderEl.disabled = false;
+      return;
+    }
+
+    const { data, error } = await supabase.functions.invoke("place-order", {
+      body: { variant_id: currentVariant.id },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (error || data?.error) {
+      const code = await parsePlaceOrderError(error, data);
+      if (code.includes("INSUFFICIENT_BALANCE")) {
+        setOrderMessage(
+          "Ooopsie! 😭 <br>Not enough ❤️ <br>You can earn ❤️ by doing tasks",
+          true,
+          true
+        );
+        orderModalOrderEl.disabled = false;
+        return;
+      }
+      if (code.includes("UNAUTHORIZED")) {
+        setOrderMessage("Session expired. Please sign in again.", false, true);
+        orderModalOrderEl.disabled = false;
+        return;
+      }
+      throw error || new Error(code || "PLACE_ORDER_FAILED");
     }
 
     setOrderMessage(
