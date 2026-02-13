@@ -757,6 +757,9 @@ h1 {
   .topbar {
     display: flex;
   }
+  .topbar-title {
+    display: none;
+  }
   .desktop-balance-row {
     display: none;
   }
