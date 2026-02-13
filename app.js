@@ -59,6 +59,7 @@ const ensureAuth = async () => {
 (async () => {
   const allowed = await ensureAuth();
   if (!allowed) return;
+  document.body.classList.add("auth-ready");
 
 const setSidebarOpen = (isOpen) => {
   bodyEl.classList.toggle("sidebar-open", isOpen);

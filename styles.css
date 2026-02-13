@@ -18,6 +18,9 @@ body {
   color: var(--text);
   min-height: 100vh;
 }
+body:not(.auth-page):not(.auth-ready) .app-layout {
+  visibility: hidden;
+}
 .page {
   max-width: 960px;
   margin: 0 auto;
