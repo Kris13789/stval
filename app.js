@@ -8,6 +8,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const tasksEl = document.getElementById("tasks");
 const balanceEls = Array.from(document.querySelectorAll("[data-balance]"));
 const fallbackBalanceEl = balanceEls.length ? null : document.getElementById("balance");
+const BALANCE_PLACEHOLDER = "--";
 const productsEl = document.getElementById("products");
 const ordersEl = document.getElementById("orders");
 const productDetailEl = document.getElementById("productDetail");
@@ -228,8 +229,27 @@ const fetchSpentHearts = async () => {
   }, 0);
 };
 
+const getBalanceTargets = () =>
+  balanceEls.length ? balanceEls : fallbackBalanceEl ? [fallbackBalanceEl] : [];
+
+const setBalancePlaceholder = () => {
+  const targets = getBalanceTargets();
+  targets.forEach((el) => {
+    el.textContent = BALANCE_PLACEHOLDER;
+    el.setAttribute("data-balance-loading", "true");
+  });
+};
+
+const setBalanceValue = (value) => {
+  const targets = getBalanceTargets();
+  targets.forEach((el) => {
+    el.textContent = value;
+    el.removeAttribute("data-balance-loading");
+  });
+};
+
 const renderBalance = async (tasks) => {
-  const targets = balanceEls.length ? balanceEls : fallbackBalanceEl ? [fallbackBalanceEl] : [];
+  const targets = getBalanceTargets();
   if (!targets.length) return;
   let total = calculateBalance(tasks);
   try {
@@ -238,9 +258,7 @@ const renderBalance = async (tasks) => {
   } catch (error) {
     console.error("Supabase error:", error);
   }
-  targets.forEach((el) => {
-    el.textContent = total;
-  });
+  setBalanceValue(total);
 };
 
 const loadTasks = async () => {
@@ -252,6 +270,7 @@ const loadTasks = async () => {
 
   if (error) {
     console.error("Supabase error:", error);
+    setBalancePlaceholder();
     return;
   }
 
@@ -262,6 +281,7 @@ const loadTasks = async () => {
 };
 
 if (tasksEl || balanceEls.length || fallbackBalanceEl) {
+  setBalancePlaceholder();
   loadTasks();
 }
 

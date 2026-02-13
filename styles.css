@@ -392,6 +392,32 @@ h1 {
   align-items: baseline;
   gap: 8px;
 }
+.page-header .balance-value {
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+.balance-number {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.page-header .balance-number {
+  min-width: 0;
+  text-align: center;
+}
+.page-header .balance-heart {
+  align-self: center;
+}
+.balance-number[data-balance-loading="true"] {
+  color: var(--muted);
+  opacity: 0.65;
+}
+.page-header .balance-number[data-balance-loading="true"] {
+  color: var(--accent);
+  opacity: 0.5;
+}
 .balance-heart {
   font-size: 0.6em;
   line-height: 1;
@@ -633,6 +659,9 @@ h1 {
 .emoji {
   font-size: 32px;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .title {
   font-size: 18px;
@@ -640,7 +669,10 @@ h1 {
   font-weight: 600;
 }
 .hearts {
+  display: inline-flex;
+  align-items: center;
   font-size: 16px;
+  line-height: 1;
   color: var(--accent);
   margin-left: auto;
   white-space: nowrap;
