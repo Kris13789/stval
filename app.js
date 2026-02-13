@@ -37,9 +37,60 @@ const isAuthPage = () => {
 };
 
 const ensureAuth = async () => {
+  // #region agent log
+  fetch("http://127.0.0.1:7242/ingest/98dd169a-84c6-46ca-b12f-06acb7246c15", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      runId: "pre-fix",
+      hypothesisId: "H2",
+      location: "app.js:40",
+      message: "ensureAuth.enter",
+      data: {
+        path: window.location.pathname || "",
+        isAuthPage: isAuthPage(),
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   if (isAuthPage()) return false;
+  const authStart = Date.now();
   const { data: { user } } = await supabase.auth.getUser();
+  // #region agent log
+  fetch("http://127.0.0.1:7242/ingest/98dd169a-84c6-46ca-b12f-06acb7246c15", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      runId: "pre-fix",
+      hypothesisId: "H3",
+      location: "app.js:44",
+      message: "ensureAuth.getUser.result",
+      data: {
+        hasUser: Boolean(user),
+        elapsedMs: Date.now() - authStart,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   if (!user) {
+    // #region agent log
+    fetch("http://127.0.0.1:7242/ingest/98dd169a-84c6-46ca-b12f-06acb7246c15", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        runId: "pre-fix",
+        hypothesisId: "H4",
+        location: "app.js:49",
+        message: "ensureAuth.redirect.login.noUser",
+        data: {
+          path: window.location.pathname || "",
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     window.location.href = "login.html";
     return false;
   }
@@ -57,9 +108,54 @@ const ensureAuth = async () => {
 };
 
 (async () => {
+  // #region agent log
+  fetch("http://127.0.0.1:7242/ingest/98dd169a-84c6-46ca-b12f-06acb7246c15", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      runId: "pre-fix",
+      hypothesisId: "H1",
+      location: "app.js:78",
+      message: "bootstrap.initial.visibility",
+      data: {
+        path: window.location.pathname || "",
+        hasAuthReady: document.body.classList.contains("auth-ready"),
+        appLayoutVisibility:
+          document.querySelector(".app-layout")
+            ? window.getComputedStyle(document.querySelector(".app-layout")).visibility
+            : "missing",
+        topbarDisplay:
+          document.querySelector(".topbar")
+            ? window.getComputedStyle(document.querySelector(".topbar")).display
+            : "missing",
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   const allowed = await ensureAuth();
   if (!allowed) return;
   document.body.classList.add("auth-ready");
+  // #region agent log
+  fetch("http://127.0.0.1:7242/ingest/98dd169a-84c6-46ca-b12f-06acb7246c15", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      runId: "pre-fix",
+      hypothesisId: "H5",
+      location: "app.js:103",
+      message: "bootstrap.authReady.applied",
+      data: {
+        hasAuthReady: document.body.classList.contains("auth-ready"),
+        appLayoutVisibility:
+          document.querySelector(".app-layout")
+            ? window.getComputedStyle(document.querySelector(".app-layout")).visibility
+            : "missing",
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
 
 const setSidebarOpen = (isOpen) => {
   bodyEl.classList.toggle("sidebar-open", isOpen);

@@ -21,6 +21,10 @@ body {
 body:not(.auth-page):not(.auth-ready) .app-layout {
   visibility: hidden;
 }
+body:not(.auth-page):not(.auth-ready) .topbar,
+body:not(.auth-page):not(.auth-ready) .sidebar-overlay {
+  display: none !important;
+}
 .page {
   max-width: 960px;
   margin: 0 auto;
