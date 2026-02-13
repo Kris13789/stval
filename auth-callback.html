@@ -6,7 +6,7 @@
     <title>Signing you in</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="shop-page">
+  <body class="auth-page">
     <div class="app-layout">
       <main class="content">
         <div class="page">
@@ -14,7 +14,7 @@
             <h1>Signing you in...</h1>
             <p class="page-subtitle" id="message">Please wait.</p>
             <p id="errorMessage" class="empty" hidden></p>
-            <a id="backToLogin" href="login.html" class="menu-link" hidden>Back to sign in</a>
+            <a id="backToLogin" href="login.html" class="back-link auth-back-link" hidden>Back to sign in</a>
           </header>
         </div>
       </main>
@@ -32,21 +32,48 @@
       const errorEl = document.getElementById("errorMessage");
       const backLink = document.getElementById("backToLogin");
 
+      const showError = (message) => {
+        messageEl.textContent = "Something went wrong.";
+        errorEl.textContent = message;
+        errorEl.hidden = false;
+        backLink.hidden = false;
+      };
+
+      const readOAuthError = () => {
+        const query = new URLSearchParams(window.location.search);
+        const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        const error = query.get("error") || hash.get("error");
+        const description = query.get("error_description") || hash.get("error_description");
+        if (!error) return null;
+        return description ? decodeURIComponent(description.replace(/\+/g, " ")) : error;
+      };
+
+      const waitForSession = async (attempts = 8, delayMs = 250) => {
+        for (let i = 0; i < attempts; i += 1) {
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
+          if (session) return session;
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+        }
+        return null;
+      };
+
       (async () => {
-        const { data: { session } } = await supabase.auth.getSession();
+        const oauthError = readOAuthError();
+        if (oauthError) {
+          showError(`Sign in failed: ${oauthError}`);
+          return;
+        }
+
+        const session = await waitForSession();
         if (!session) {
-          messageEl.textContent = "Something went wrong.";
-          errorEl.textContent = "Could not sign you in. Please try again.";
-          errorEl.hidden = false;
-          backLink.hidden = false;
+          showError("Could not sign you in. Please try again.");
           return;
         }
         const email = session?.user?.email;
         if (!email) {
-          messageEl.textContent = "Something went wrong.";
-          errorEl.textContent = "Could not get your email.";
-          errorEl.hidden = false;
-          backLink.hidden = false;
+          showError("Could not get your email.");
           return;
         }
         const { data, error } = await supabase
@@ -62,6 +89,7 @@
           backLink.hidden = false;
           return;
         }
+        window.history.replaceState({}, document.title, window.location.pathname);
         window.location.replace("shop.html");
       })();
     </script>

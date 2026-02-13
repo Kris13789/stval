@@ -127,6 +127,34 @@ body.sidebar-open .menu-bars span:nth-child(3) {
   grid-template-columns: var(--sidebar-width) 1fr;
   height: 100vh;
 }
+.auth-page .app-layout {
+  grid-template-columns: 1fr;
+}
+.auth-page .content {
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+.auth-page .page {
+  width: 100%;
+  max-width: 460px;
+  flex: none;
+  padding: 0;
+}
+.auth-page .btn {
+  width: auto;
+  align-self: center;
+}
+.auth-page #errorMessage.empty {
+  background: #fff0f4;
+  border: 1px solid #ffd3df;
+  border-radius: 12px;
+  color: #9f1239;
+  padding: 10px 12px;
+}
+.auth-back-link {
+  align-self: center;
+}
 .sidebar {
   background: var(--accent);
   border-right: 1px solid var(--border);
@@ -624,6 +652,9 @@ h1 {
   .app-layout {
     grid-template-columns: 1fr;
     height: calc(100vh - var(--topbar-height));
+  }
+  .auth-page .app-layout {
+    height: 100vh;
   }
   .sidebar {
     position: fixed;
